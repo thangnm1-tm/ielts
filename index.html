@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="IELTS Study Hub - Ứng dụng quản lý học tập, từ vựng, luyện đề thi Cambridge IELTS cá nhân và theo dõi tiến độ chi tiết.">
+  <title>IELTS Study Hub - IELTS Notebook</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="dark-theme">
+  <!-- App Layout Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <div class="brand-info">
+          <h2>IELTS Hub</h2>
+          <span>IELTS Notebook v1.0</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a href="#dashboard" class="menu-item active" id="nav-dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#vocabulary" class="menu-item" id="nav-vocabulary">
+          <i data-lucide="book-open"></i>
+          <span>Sổ từ vựng</span>
+        </a>
+        <a href="#quiz" class="menu-item" id="nav-quiz">
+          <i data-lucide="brain-circuit"></i>
+          <span>Luyện từ vựng</span>
+        </a>
+        <a href="#cambridge" class="menu-item" id="nav-cambridge">
+          <i data-lucide="file-text"></i>
+          <span>Luyện đề Cam</span>
+        </a>
+        <a href="#mistakes" class="menu-item" id="nav-mistakes">
+          <i data-lucide="book-x"></i>
+          <span>Sổ lỗi sai</span>
+        </a>
+        <a href="#analytics" class="menu-item" id="nav-analytics">
+          <i data-lucide="trending-up"></i>
+          <span>Tiến bộ</span>
+        </a>
+        <a href="#planner" class="menu-item" id="nav-planner">
+          <i data-lucide="calendar"></i>
+          <span>Kế hoạch học</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer User Profile -->
+      <div class="sidebar-user" id="profile-trigger">
+        <div class="user-avatar">T</div>
+        <div class="user-details">
+          <h4 id="profile-name">Thắng</h4>
+          <span id="profile-target">Target: 6.5</span>
+        </div>
+        <button class="settings-btn" id="nav-settings" title="Cài đặt">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- App Header -->
+      <header class="app-header">
+        <div class="header-search">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Tìm kiếm nhanh từ vựng, bài test..." id="global-search">
+        </div>
+        <div class="header-actions">
+          <div class="streak-badge" title="Chuỗi ngày học tập liên tục">
+            <i data-lucide="flame"></i>
+            <span id="streak-count">0 ngày</span>
+          </div>
+          <button class="theme-toggle-btn" id="theme-toggle" title="Đổi giao diện sáng/tối">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic Viewport -->
+      <div class="app-content-viewport" id="main-content">
+        <!-- Rendered modules will go here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS SYSTEM -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- MODALS -->
+
+  <!-- Modal 1: Add / Edit Vocabulary Word -->
+  <div class="modal" id="word-modal">
+    <div class="modal-backdrop" onclick="closeModal('word-modal')"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="word-modal-title">Thêm từ vựng mới</h3>
+        <button class="close-btn" onclick="closeModal('word-modal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="word-form">
+        <input type="hidden" id="vocab-id">
+        <div class="form-grid">
+          <div class="form-group col-6">
+            <label for="vocab-word">Từ vựng *</label>
+            <input type="text" id="vocab-word" required placeholder="Ví dụ: sustainable">
+          </div>
+          <div class="form-group col-6">
+            <label for="vocab-ipa">Phiên âm (IPA)</label>
+            <input type="text" id="vocab-ipa" placeholder="Ví dụ: /səˈsteɪnəbl/">
+          </div>
+          <div class="form-group col-6">
+            <label for="vocab-meaning-vi">Nghĩa tiếng Việt *</label>
+            <input type="text" id="vocab-meaning-vi" required placeholder="Ví dụ: bền vững">
+          </div>
+          <div class="form-group col-6">
+            <label for="vocab-meaning-en">Nghĩa tiếng Anh (Định nghĩa)</label>
+            <input type="text" id="vocab-meaning-en" placeholder="Ví dụ: able to be maintained at a certain level">
+          </div>
+          <div class="form-group col-4">
+            <label for="vocab-part-of-speech">Từ loại</label>
+            <select id="vocab-part-of-speech">
+              <option value="noun">Danh từ (noun)</option>
+              <option value="verb">Động từ (verb)</option>
+              <option value="adjective" selected>Tính từ (adjective)</option>
+              <option value="adverb">Trạng từ (adverb)</option>
+              <option value="preposition">Giới từ (preposition)</option>
+              <option value="conjunction">Liên từ (conjunction)</option>
+              <option value="phrase">Cụm từ (phrase)</option>
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label for="vocab-topic">Chủ đề</label>
+            <select id="vocab-topic">
+              <option value="Environment">Environment</option>
+              <option value="Education">Education</option>
+              <option value="Technology">Technology</option>
+              <option value="Health">Health</option>
+              <option value="Work">Work</option>
+              <option value="Culture">Culture</option>
+              <option value="General" selected>General</option>
+            </select>
+          </div>
+          <div class="form-group col-4">
+            <label for="vocab-level">Độ khó</label>
+            <select id="vocab-level">
+              <option value="Dễ">Dễ</option>
+              <option value="Trung bình" selected>Trung bình</option>
+              <option value="Khó">Khó</option>
+            </select>
+          </div>
+          <div class="form-group col-6">
+            <label for="vocab-source">Nguồn tài liệu</label>
+            <input type="text" id="vocab-source" placeholder="Ví dụ: Cambridge 17 Test 2 Reading">
+          </div>
+          <div class="form-group col-6">
+            <label for="vocab-status">Trạng thái học</label>
+            <select id="vocab-status">
+              <option value="Chưa thuộc" selected>Chưa thuộc (Học mới)</option>
+              <option value="Đang học">Đang học</option>
+              <option value="Đã thuộc">Đã thuộc (Thành thạo)</option>
+            </select>
+          </div>
+          <div class="form-group col-12">
+            <label for="vocab-example">Câu ví dụ</label>
+            <textarea id="vocab-example" rows="2" placeholder="Ví dụ: Sustainable development is important for the environment."></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('word-modal')">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu từ vựng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Import Vocabulary CSV -->
+  <div class="modal" id="import-modal">
+    <div class="modal-backdrop" onclick="closeModal('import-modal')"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Nhập từ vựng từ CSV / Text</h3>
+        <button class="close-btn" onclick="closeModal('import-modal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="import-instructions">
+        <p>Nhập từ vựng bằng cách dán văn bản có cấu trúc phân tách bằng dấu phẩy (CSV) hoặc dấu tab. Ví dụ:</p>
+        <pre>Word,Meaning,Topic,Example
+abandon,bỏ rơi,General,He abandoned the plan.
+accurate,chính xác,Academic,The data is accurate.</pre>
+      </div>
+      <form id="import-form">
+        <div class="form-group">
+          <label for="import-text">Dữ liệu CSV / Phân tách tab</label>
+          <textarea id="import-text" rows="8" required placeholder="Dán dòng dữ liệu CSV vào đây (dòng đầu là tiêu đề Word,Meaning,Topic,Example)..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('import-modal')">Hủy</button>
+          <button type="submit" class="btn btn-primary">Bắt đầu Import</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Settings Profile Modal -->
+  <div class="modal" id="settings-modal">
+    <div class="modal-backdrop" onclick="closeModal('settings-modal')"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Cấu hình học tập</h3>
+        <button class="close-btn" onclick="closeModal('settings-modal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="settings-form">
+        <div class="form-group">
+          <label for="setting-username">Họ tên của bạn</label>
+          <input type="text" id="setting-username" required placeholder="Nhập tên">
+        </div>
+        <div class="form-group">
+          <label for="setting-target">Mục tiêu IELTS Band</label>
+          <select id="setting-target">
+            <option value="5.0">IELTS 5.0</option>
+            <option value="5.5">IELTS 5.5</option>
+            <option value="6.0">IELTS 6.0</option>
+            <option value="6.5">IELTS 6.5</option>
+            <option value="7.0">IELTS 7.0</option>
+            <option value="7.5">IELTS 7.5</option>
+            <option value="8.0">IELTS 8.0</option>
+            <option value="8.5">IELTS 8.5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="setting-study-hours">Thời gian học mỗi ngày (giờ)</label>
+          <input type="number" id="setting-study-hours" min="0.5" max="8" step="0.5" value="1.5">
+        </div>
+        <div class="form-group" style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <h4 style="font-weight:600; font-family:var(--font-heading); color:var(--primary); margin-bottom: 8px;">Đồng bộ hóa đám mây (Cloud Sync)</h4>
+          <label for="setting-sync-code">Mã đồng bộ (Sync Code)</label>
+          <input type="text" id="setting-sync-code" placeholder="Ví dụ: thang_ielts_hub">
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Nhập cùng một mã trên mọi thiết bị để dùng chung dữ liệu học tập.</span>
+        </div>
+        <div class="form-group">
+          <label for="setting-firebase-config">Cấu hình Firebase (JSON) - Tùy chọn</label>
+          <textarea id="setting-firebase-config" rows="3" placeholder='{"apiKey": "...", "projectId": "..."}' style="font-size: 0.75rem; font-family: monospace;"></textarea>
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Để trống để sử dụng database hệ thống dùng chung mặc định.</span>
+        </div>
+        <div class="danger-zone">
+          <h4>Vùng nguy hiểm</h4>
+          <p>Thao tác xóa dữ liệu sẽ xóa toàn bộ từ vựng, lịch sử, ghi chú và không thể phục hồi.</p>
+          <button type="button" class="btn btn-danger" id="reset-all-data-btn">Xóa toàn bộ dữ liệu ứng dụng</button>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" onclick="AppState.logout()" style="margin-right: auto;">Đăng xuất</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal('settings-modal')">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật cấu hình</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- AUTH INTERCEPTOR MODAL (Login/Register) -->
+  <div class="modal" id="auth-modal">
+    <div class="modal-backdrop" style="backdrop-filter: blur(16px); background-color: rgba(9, 13, 22, 0.9);"></div>
+    <div class="modal-content" style="max-width: 420px; border-color: var(--primary-glow); box-shadow: 0 0 30px var(--primary-glow);">
+      <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+        <div style="text-align: center;">
+          <div class="brand-logo" style="margin: 0 auto 12px auto; width: 48px; height: 48px;">
+            <i data-lucide="graduation-cap" style="width: 24px; height: 24px;"></i>
+          </div>
+          <h2 id="auth-title" style="font-size: 1.5rem; font-weight: 800;">Đăng nhập IELTS Hub</h2>
+          <p id="auth-subtitle" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Vui lòng đăng nhập để bắt đầu học tập</p>
+        </div>
+      </div>
+      <form id="auth-form">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="auth-username">Tên đăng nhập</label>
+          <input type="text" id="auth-username" required placeholder="Nhập tên đăng nhập (ví dụ: thang)">
+        </div>
+        <div class="form-group" id="auth-email-group" style="margin-bottom: 12px; display: none;">
+          <label for="auth-email">Địa chỉ Email</label>
+          <input type="email" id="auth-email" placeholder="Nhập email của bạn">
+        </div>
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="auth-password">Mật khẩu</label>
+          <input type="password" id="auth-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" id="auth-submit-btn" style="width: 100%; padding: 12px 20px;">
+          Đăng nhập
+        </button>
+        <div style="text-align: center; margin-top: 16px; font-size: 0.85rem;">
+          <a href="#" id="auth-toggle-link" style="color: var(--primary); font-weight: 600;">Chưa có tài khoản? Đăng ký ngay</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Javascript Modules -->
+  <script src="js/state.js"></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/vocabulary.js"></script>
+  <script src="js/tests.js"></script>
+  <script src="js/cambridge.js"></script>
+  <script src="js/mistakes.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/plan.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
