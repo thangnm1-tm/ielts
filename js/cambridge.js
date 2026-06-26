@@ -23,6 +23,9 @@ function removeVocabTooltip() {
 document.addEventListener('mouseup', (e) => {
   const selection = window.getSelection();
   if (!selection) return;
+
+  // If user clicked on the tooltip itself, let the tooltip's own handler deal with it
+  if (e.target.closest('.vocab-tooltip')) return;
   
   const text = selection.toString().trim();
   
@@ -33,16 +36,23 @@ document.addEventListener('mouseup', (e) => {
     return;
   }
 
-  // Filter single words
-  if (text && text.length > 2 && text.length < 30 && !text.includes(' ') && !text.includes('\n')) {
+  // Filter words/short phrases
+  if (text && text.length > 2 && text.length < 60 && !text.includes('\n')) {
     removeVocabTooltip();
     
     // Create floating tooltip button
     const tooltip = document.createElement('div');
     tooltip.className = 'vocab-tooltip';
+    tooltip.style.position = 'absolute';
+    tooltip.style.zIndex = '9999';
+    tooltip.style.cursor = 'pointer';
+    
+    const displayWord = text.length > 15 ? text.substring(0, 15) + '…' : text;
     tooltip.innerHTML = `
-      <i data-lucide="plus-circle" style="width:14px;height:14px;color:var(--primary)"></i>
-      <span>Lưu "${text}"</span>
+      <span class="vocab-translation" style="color: var(--text-primary); font-weight: 500;">"${displayWord}": đang dịch...</span>
+      <span style="margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--border-color); color: var(--primary); display: flex; align-items: center; gap: 4px; font-weight: 600;">
+        <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Lưu
+      </span>
     `;
     
     // Set position
@@ -52,9 +62,32 @@ document.addEventListener('mouseup', (e) => {
     document.body.appendChild(tooltip);
     lucide.createIcons();
     dictionaryTooltipElement = tooltip;
+
+    let translatedText = '';
+    const translateUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(text)}`;
     
-    // Bind click to open add vocab word modal
-    tooltip.addEventListener('click', (ev) => {
+    fetch(translateUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          translatedText = data[0][0][0];
+          const translationSpan = tooltip.querySelector('.vocab-translation');
+          if (translationSpan) {
+            translationSpan.textContent = `"${displayWord}": ${translatedText}`;
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Translation error:', err);
+        const translationSpan = tooltip.querySelector('.vocab-translation');
+        if (translationSpan) {
+          translationSpan.textContent = `"${displayWord}": Không dịch được`;
+        }
+      });
+    
+    // Use mousedown to capture click before mouseup fires again
+    tooltip.addEventListener('mousedown', (ev) => {
+      ev.preventDefault();
       ev.stopPropagation();
       removeVocabTooltip();
       window.getSelection().removeAllRanges();
@@ -62,7 +95,7 @@ document.addEventListener('mouseup', (e) => {
       // Open modal with word prefilled
       document.getElementById('vocab-id').value = '';
       document.getElementById('vocab-word').value = text;
-      document.getElementById('vocab-meaning-vi').value = '';
+      document.getElementById('vocab-meaning-vi').value = translatedText || '';
       document.getElementById('vocab-meaning-en').value = '';
       document.getElementById('vocab-ipa').value = '';
       document.getElementById('vocab-source').value = 'Cambridge Reading Passage';

@@ -2041,3 +2041,38 @@ form {
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================================================
+   VOCABULARY TOOLTIP (Cambridge Reading text selection)
+   ======================================================================== */
+.vocab-tooltip {
+  position: absolute;
+  z-index: 9999;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: auto;
+  animation: tooltipFadeIn 0.15s ease-out;
+  transform: translateX(-50%);
+}
+.vocab-tooltip:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+}
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
