@@ -69,12 +69,7 @@ async function initApp() {
   window.showToast('Đang đồng bộ dữ liệu từ đám mây...', 'info');
   await AppState.loadAllDataFromServer();
 
-  // 2. Pre-seed vocabulary from mockData if database is empty on server
-  const currentVocab = AppState.getVocabularies();
-  if (currentVocab.length === 0) {
-    console.log('Pre-seeding mock vocabulary...');
-    MockIELTSData.vocabulary.forEach(word => AppState.saveVocabulary(word));
-  }
+
 
   // 3. Render Profile Card
   updateProfileUI();

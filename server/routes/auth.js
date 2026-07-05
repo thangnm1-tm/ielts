@@ -35,6 +35,116 @@ router.post('/register', async (req, res) => {
       [username, email, hashedPassword]
     );
     const newUser = insertRes.rows[0];
+    const userId = newUser.id;
+
+    // Pre-seed academic vocabulary for the new user
+    const mockVocabs = [
+      {
+        word: 'sustainable',
+        ipa: '/səˈsteɪnəbl/',
+        meaning_vi: 'bền vững, thân thiện với môi trường',
+        meaning_en: 'Able to be maintained at a certain rate or level, avoiding depletion of natural resources.',
+        part_of_speech: 'adjective',
+        example: 'Sustainable development is crucial for preserving our environment for future generations.',
+        topic: 'Environment',
+        source: 'Cambridge 17 - Test 2 Reading',
+        difficulty: 'Trung bình',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'abandon',
+        ipa: '/əˈbændən/',
+        meaning_vi: 'ruồng bỏ, từ bỏ, hủy bỏ',
+        meaning_en: 'Cease to support or look after; give up completely.',
+        part_of_speech: 'verb',
+        example: 'The company decided to abandon the project due to high maintenance costs.',
+        topic: 'General',
+        source: 'General Academic Wordlist',
+        difficulty: 'Dễ',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'accurate',
+        ipa: '/ˈækjərət/',
+        meaning_vi: 'chính xác, đúng đắn',
+        meaning_en: 'Correct in all details; exact.',
+        part_of_speech: 'adjective',
+        example: 'Scientists need accurate measurements to draw correct conclusions.',
+        topic: 'Technology',
+        source: 'Cambridge 15 - Test 1 Reading',
+        difficulty: 'Dễ',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'acquire',
+        ipa: '/əˈkwaɪə(r)/',
+        meaning_vi: 'thu nhận được, đạt được',
+        meaning_en: 'Buy or obtain an asset or object; learn or develop a skill.',
+        part_of_speech: 'verb',
+        example: 'Children acquire language naturally through exposure and interaction.',
+        topic: 'Education',
+        source: 'General Academic Wordlist',
+        difficulty: 'Trung bình',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'evidence',
+        ipa: '/ˈevɪdəns/',
+        meaning_vi: 'bằng chứng, chứng cứ',
+        meaning_en: 'The available body of facts or information indicating whether a belief or proposition is true or valid.',
+        part_of_speech: 'noun',
+        example: 'There is no scientific evidence to support this claim.',
+        topic: 'Science',
+        source: 'Cambridge 16 - Test 3 Reading',
+        difficulty: 'Trung bình',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'cognitive',
+        ipa: '/ˈkɒɡnətɪv/',
+        meaning_vi: 'liên quan đến nhận thức',
+        meaning_en: 'Relating to the mental action or process of acquiring knowledge and understanding through thought, experience, and the senses.',
+        part_of_speech: 'adjective',
+        example: 'Reading books regularly helps improve cognitive abilities.',
+        topic: 'Education',
+        source: 'General Academic Wordlist',
+        difficulty: 'Khó',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'sufficient',
+        ipa: '/səˈfɪʃnt/',
+        meaning_vi: 'đủ, có khả năng',
+        meaning_en: 'Enough; adequate.',
+        part_of_speech: 'adjective',
+        example: 'The police did not have sufficient evidence to arrest the suspect.',
+        topic: 'General',
+        source: 'General Academic Wordlist',
+        difficulty: 'Dễ',
+        status: 'Chưa thuộc'
+      },
+      {
+        word: 'biodiversity',
+        ipa: '/ˌbaɪəʊdaɪˈvɜːsəti/',
+        meaning_vi: 'đa dạng sinh học',
+        meaning_en: 'The variety of plant and animal life in the world or in a particular habitat.',
+        part_of_speech: 'noun',
+        example: 'Protecting rainforests is essential for maintaining global biodiversity.',
+        topic: 'Environment',
+        source: 'Cambridge 17 - Test 1 Reading',
+        difficulty: 'Khó',
+        status: 'Chưa thuộc'
+      }
+    ];
+
+    for (const v of mockVocabs) {
+      const vId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      await db.query(
+        `INSERT INTO vocabularies (id, user_id, word, ipa, meaning_vi, meaning_en, part_of_speech, example, topic, source, difficulty, status) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        [vId, userId, v.word, v.ipa, v.meaning_vi, v.meaning_en, v.part_of_speech, v.example, v.topic, v.source, v.difficulty, v.status]
+      );
+    }
 
     // Create Token
     const token = jwt.sign({ id: newUser.id, username: newUser.username }, JWT_SECRET, { expiresIn: '7d' });
