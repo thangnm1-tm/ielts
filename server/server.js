@@ -37,12 +37,41 @@ const dbConfig = process.env.DATABASE_URL
 
 const dbPool = new Pool(dbConfig);
 
-// Test database connection
-dbPool.connect((err, client, release) => {
+// Test database connection and auto-initialize tables if missing
+dbPool.connect(async (err, client, release) => {
   if (err) {
     console.error('Error acquiring database client from connection pool:', err.stack);
-  } else {
-    console.log('PostgreSQL database connected successfully.');
+    return;
+  }
+  
+  console.log('PostgreSQL database connected successfully.');
+  
+  try {
+    const res = await client.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public'
+        AND table_name = 'users'
+      );
+    `);
+    
+    const tableExists = res.rows[0].exists;
+    if (!tableExists) {
+      console.log('Database tables not found. Initializing schema.sql...');
+      const schemaPath = path.join(__dirname, 'schema.sql');
+      if (fs.existsSync(schemaPath)) {
+        const sqlScript = fs.readFileSync(schemaPath, 'utf8');
+        await client.query(sqlScript);
+        console.log('✅ Database schema initialized successfully on startup.');
+      } else {
+        console.warn('⚠️ schema.sql file not found. Could not initialize database.');
+      }
+    } else {
+      console.log('Database tables already exist. Skipping schema initialization.');
+    }
+  } catch (schemaErr) {
+    console.error('Error during database schema check/initialization:', schemaErr);
+  } finally {
     release();
   }
 });
