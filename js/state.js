@@ -4,7 +4,7 @@
 
 const SERVER_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://ielts-hub-backend.onrender.com'; // Thay thế bằng URL Backend thật sau khi deploy Render/Railway
+  : 'https://ielts-a7ws.onrender.com'; // Thay thế bằng URL Backend thật sau khi deploy Render/Railway
 
 const API_BASE = `${SERVER_HOST}/api`;
 
@@ -34,7 +34,7 @@ function dispatchStateEvent(name, detail = {}) {
 
 // --- REST API Client interfaces ---
 const AppState = {
-  
+
   // --- AUTHENTICATION ACTIONS ---
   async register(username, email, password) {
     try {
@@ -96,7 +96,7 @@ const AppState = {
   // Load cache states on boot
   async loadAllDataFromServer() {
     if (!this.isLoggedIn()) return;
-    
+
     try {
       // 1. Profile stats
       const profileRes = await fetch(`${API_BASE}/auth/profile`, { headers: getAuthHeaders() });
@@ -136,7 +136,7 @@ const AppState = {
         cacheState.plans = await plansRes.json();
         dispatchStateEvent('planChange', cacheState.plans);
       }
-      
+
       console.log("Cached state database synchronized successfully with server.");
 
     } catch (err) {
