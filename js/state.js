@@ -178,7 +178,8 @@ const AppState = {
   },
 
   saveVocabulary(wordObj) {
-    const wordId = wordObj.id || 'v_' + Date.now();
+    const existing = cacheState.vocabularies.find(v => v.word.toLowerCase() === wordObj.word.trim().toLowerCase());
+    const wordId = wordObj.id || (existing ? existing.id : 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
     const formattedWord = {
       id: wordId,
       word: wordObj.word.trim(),
@@ -213,7 +214,10 @@ const AppState = {
         const saved = await res.json();
         // Overwrite local in-memory id if it was server-generated
         const localIdx = cacheState.vocabularies.findIndex(v => v.word.toLowerCase() === saved.word.toLowerCase());
-        if (localIdx > -1) cacheState.vocabularies[localIdx] = saved;
+        if (localIdx > -1) {
+          cacheState.vocabularies[localIdx] = saved;
+          dispatchStateEvent('vocabularyChange', cacheState.vocabularies);
+        }
       }
     }).catch(e => console.error("Sync remote vocab failed:", e));
 

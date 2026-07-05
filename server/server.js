@@ -69,6 +69,20 @@ dbPool.connect(async (err, client, release) => {
     } else {
       console.log('Database tables already exist. Skipping schema initialization.');
     }
+
+    // Clean up duplicate vocabularies (keep only the newest created ID for each unique user/word combo)
+    console.log('Checking and cleaning up duplicate vocabularies...');
+    const cleanupRes = await client.query(`
+      DELETE FROM vocabularies WHERE id NOT IN (
+        SELECT MAX(id) FROM vocabularies GROUP BY user_id, LOWER(word)
+      )
+    `);
+    if (cleanupRes.rowCount > 0) {
+      console.log(`✅ Cleaned up ${cleanupRes.rowCount} duplicate vocabulary records.`);
+    } else {
+      console.log('No duplicate vocabulary records found.');
+    }
+
   } catch (schemaErr) {
     console.error('Error during database schema check/initialization:', schemaErr);
   } finally {
