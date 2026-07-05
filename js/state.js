@@ -2,7 +2,11 @@
    STATE PERSISTENCE & API CONNECTION LAYER (Rest API & Cache client)
    ========================================================================== */
 
-const API_BASE = 'http://localhost:5000/api';
+const SERVER_HOST = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : 'https://ielts-hub-backend.onrender.com'; // Thay thế bằng URL Backend thật sau khi deploy Render/Railway
+
+const API_BASE = `${SERVER_HOST}/api`;
 
 // In-memory synchronized state cache
 const cacheState = {
@@ -391,7 +395,7 @@ const AppState = {
         // Prefix audio URL with Server base path
         return records.map(r => ({
           ...r,
-          audioUrl: `http://localhost:5000${r.filePath}`
+          audioUrl: `${SERVER_HOST}${r.filePath}`
         }));
       }
       return [];
