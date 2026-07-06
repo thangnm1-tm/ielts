@@ -352,6 +352,135 @@ const MockIELTSData = {
           }
         }
       ]
+    },
+    {
+      id: 'cam_19',
+      title: 'Cambridge IELTS 19',
+      description: 'Đề thi thử IELTS chính thức mới nhất xuất bản năm 2024',
+      tests: [
+        {
+          number: 'Test 1',
+          reading: {
+            title: 'The Rise of Artificial Intelligence in Healthcare',
+            passages: [
+              {
+                number: 1,
+                title: 'AI-Powered Diagnostics in Modern Medicine',
+                content: `
+                  <p><strong>A.</strong> The integration of Artificial Intelligence (AI) into healthcare systems has accelerated rapidly over the past decade. Deep learning algorithms are now capable of analyzing medical images, such as X-rays, MRIs, and CT scans, with a level of accuracy that rivals experienced human radiologists. By identifying patterns that may be invisible to the human eye, AI assistants can detect early-stage cancers, cardiovascular anomalies, and neurological disorders, significantly improving patient prognosis.</p>
+                  
+                  <p><strong>B.</strong> Proponents of AI diagnostic tools argue that they can alleviate the immense pressure on public healthcare systems. In many developing regions, there is a critical shortage of qualified medical specialists. Deploying AI diagnostics via mobile networks can bridge this gap, providing rural clinics with near-instantaneous expert analyses. This democratizes high-quality healthcare and reduces the time patients must wait for critical test results.</p>
+                  
+                  <p><strong>C.</strong> However, the widespread adoption of AI in medicine is not without controversy. Skeptics point out that machine learning models are only as good as the datasets used to train them. If the training data lacks diversity, the AI may produce biased diagnoses for underrepresented patient demographics. Furthermore, there are unresolved legal questions regarding liability: if an AI algorithm misinterprets a scan, resulting in incorrect treatment, it remains unclear whether the responsibility lies with the software developer, the hospital, or the treating physician.</p>
+                  
+                  <p><strong>D.</strong> Despite these ethical hurdles, the potential benefits of AI in clinical workflows are undeniable. Rather than replacing human doctors, AI is best viewed as a collaborative co-pilot. By automating routine triage and scan screening, AI allows healthcare professionals to dedicate more face-to-face time to patient care, combining technological precision with human empathy.</p>
+                `,
+                questions: [
+                  {
+                    type: 'y_n_ng',
+                    instruction: 'Write TRUE, FALSE or NOT GIVEN for the statements below.',
+                    items: [
+                      { num: 1, text: 'Deep learning algorithms can analyze medical scans with high accuracy.', answer: 'TRUE' },
+                      { num: 2, text: 'Hospitals are legally responsible for all diagnostic errors made by AI software.', answer: 'NOT GIVEN' },
+                      { num: 3, text: 'AI diagnostic tools are intended to completely replace human radiologists in the future.', answer: 'FALSE' }
+                    ]
+                  },
+                  {
+                    type: 'gap_fill',
+                    instruction: 'Complete the sentences. Write NO MORE THAN TWO WORDS from the passage.',
+                    items: [
+                      { num: 4, text: 'Many developing areas suffer from a severe ______ of medical specialists.', answer: 'shortage' },
+                      { num: 5, text: 'Medical software developers, hospitals, and doctors face complex issues regarding ______ if AI fails.', answer: 'liability' }
+                    ]
+                  },
+                  {
+                    type: 'mcq',
+                    instruction: 'Choose the correct letter, A, B, C or D.',
+                    items: [
+                      {
+                        num: 6,
+                        text: 'What is the main topic of paragraph C?',
+                        options: [
+                          'A. The benefits of AI in developing countries.',
+                          'B. Ethical controversies and limitations of AI diagnostics.',
+                          'C. How to train machine learning models.',
+                          'D. The history of X-rays and MRI scans.',
+                          'E. None of the above.'
+                        ],
+                        answer: 'B'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          listening: {
+            title: 'Sports Program Inquiry',
+            audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+            transcript: `
+              <p><strong>Agent:</strong> Green Valley Community Center, how can I help you today?</p>
+              <p><strong>Caller:</strong> Hi, I'm calling to inquire about the swimming program for adults starting next week.</p>
+              <p><strong>Agent:</strong> Certainly. We have beginner and intermediate classes. Which level are you looking for?</p>
+              <p><strong>Caller:</strong> Intermediate, please. I want to improve my stroke technique.</p>
+              <p><strong>Agent:</strong> Great. The intermediate class runs on Tuesdays at 7:30 PM. The coordinator is coach Robert.</p>
+              <p><strong>Caller:</strong> Robert, spelling R-O-B-E-R-T? Excellent. And what is the fee for the 8-week course?</p>
+              <p><strong>Agent:</strong> It's 120 dollars for members and 150 dollars for non-members.</p>
+            `,
+            questions: [
+              {
+                section: 1,
+                instruction: 'Complete the notes below. Write ONE WORD AND/OR A NUMBER for each answer.',
+                items: [
+                  { num: 1, label: 'Inquiry Subject:', text: '______ class', answer: 'intermediate' },
+                  { num: 2, label: 'Weekly Day:', text: '______', answer: 'Tuesdays' },
+                  { num: 3, label: 'Class Time:', text: '______ PM', answer: '7:30' },
+                  { num: 4, label: 'Coach Name:', text: '______', answer: 'Robert' },
+                  { num: 5, label: 'Fee for non-members:', text: '$ ______', answer: '150' }
+                ]
+              }
+            ]
+          },
+          writing: {
+            tasks: [
+              {
+                number: 'Task 1',
+                prompt: 'The chart below shows the number of international tourists visiting five different countries between 2010 and 2020. Summarize the information by selecting and reporting the main features, and make comparisons where relevant.',
+                tips: 'Write at least 150 words. Spend about 20 minutes.'
+              },
+              {
+                number: 'Task 2',
+                prompt: 'In many countries, more and more people are choosing to live alone. What are the causes of this trend, and does it have more positive or negative effects on society?',
+                tips: 'Write at least 250 words. Spend about 40 minutes.'
+              }
+            ]
+          },
+          speaking: {
+            parts: [
+              {
+                number: 'Part 1: Hometown & accommodation',
+                questions: [
+                  'Where is your hometown?',
+                  'What do you like most about your neighborhood?',
+                  'Do you live in a house or an apartment?'
+                ]
+              },
+              {
+                number: 'Part 2: Cue Card',
+                topic: 'Describe a useful skill you learned recently.',
+                points: [
+                  'What the skill is',
+                  'Who taught you this skill',
+                  'How you learned it',
+                  'Explain why you find it useful'
+                ],
+                prepareTime: '1 minute preparation',
+                talkTime: '1 to 2 minutes speaking'
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 };
